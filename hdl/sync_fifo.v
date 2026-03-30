@@ -8,8 +8,8 @@
 
 module sync_fifo
 #(
-    parameter DEPTH,
-    parameter WIDTH
+    parameter DEPTH = 5,
+    parameter WIDTH = 8
 )
 (
     // global signals
