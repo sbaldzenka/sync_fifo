@@ -1,5 +1,5 @@
 -- project     : sync_fifo
--- date        : 27.07.2023
+-- date        : 14.04.2026
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
 -- description : https://github.com/sbaldzenka/sync_fifo
@@ -7,10 +7,10 @@
 vlib work
 vmap work work
 
-vlog ../tb/sync_fifo_testbench.v
-vlog ../hdl/sync_fifo.v
+vcom -93 ../tb/sync_fifo_tb.vhd
+vcom -93 ../hdl/sync_fifo.vhd
 
-vsim -t 1ps -voptargs=+acc=lprn -lib work sync_fifo_testbench
+vsim -t 1ps -voptargs=+acc=lprn -lib work sync_fifo_tb
 
 do wave_test.do
 view wave

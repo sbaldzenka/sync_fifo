@@ -2,7 +2,7 @@
 // date        : 27.07.2023
 // author      : siarhei baldzenka
 // e-mail      : sbaldzenka@proton.me
-// description : https://github.com/sbaldzenka/sync_fifo
+// description : https://github.com/sbaldzenka/sync_fifo/sync_fifo_verilog
 
 `timescale 1ns/100ps
 
@@ -27,14 +27,12 @@ module sync_fifo
     output wire             o_empty
 );
 
+    // signals
     reg [WIDTH-1:0] mem [2**DEPTH-1:0];
-
     reg [DEPTH-1:0] push_pointer;
     reg [DEPTH-1:0] pop_pointer;
-
     reg             read_flag;
     reg             write_flag;
-
     reg             full_flag;
     reg             empty_flag;
 
@@ -76,7 +74,7 @@ module sync_fifo
         end
     end
 
-    // FULL FLAG
+    // WRITE FLAG
     always@(posedge i_clk) begin
         if (i_reset) begin
             write_flag <= 1'b0;
@@ -91,6 +89,7 @@ module sync_fifo
         end
     end
 
+    // FULL FLAG
     always@(*) begin
         if (i_reset) begin
             full_flag = 1'b0;
@@ -105,7 +104,7 @@ module sync_fifo
 
     assign o_full = full_flag;
 
-    // EMPTY FLAG
+    // READ FLAG
     always@(posedge i_clk) begin
         if (i_reset) begin
             read_flag <= 1'b1;
@@ -120,6 +119,7 @@ module sync_fifo
         end
     end
 
+    // EMPTY FLAG
     always@(*) begin
         if (i_reset) begin
             empty_flag = 1'b1;
