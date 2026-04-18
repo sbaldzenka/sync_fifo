@@ -8,33 +8,41 @@
 
 module sync_fifo
 #(
-    parameter DEPTH = 5,
-    parameter WIDTH = 8
+    parameter FIFO_DEPTH = 8,
+    parameter DATA_WIDTH = 8
 )
 (
     // global signals
-    input  wire             i_clk,
-    input  wire             i_reset,
+    input  wire                  i_clk,
+    input  wire                  i_reset,
     // write data signals
-    input  wire             i_wr_en,
-    input  wire [WIDTH-1:0] i_data,
+    input  wire                  i_wr_en,
+    input  wire [DATA_WIDTH-1:0] i_data,
     // read data signals
-    input  wire             i_rd_en,
-    output reg              o_valid,
-    output reg  [WIDTH-1:0] o_data,
+    input  wire                  i_rd_en,
+    output reg                   o_valid,
+    output reg  [DATA_WIDTH-1:0] o_data,
     // status signals
-    output wire             o_full,
-    output wire             o_empty
+    output wire                  o_full,
+    output wire                  o_empty,
+    output wire                  o_underflow,
+    output wire                  o_overflow
 );
 
+    // parameters
+    parameter ADDR_WIDTH = $clog2(FIFO_DEPTH);
+
     // signals
-    reg [WIDTH-1:0] mem [2**DEPTH-1:0];
-    reg [DEPTH-1:0] push_pointer;
-    reg [DEPTH-1:0] pop_pointer;
-    reg             read_flag;
-    reg             write_flag;
-    reg             full_flag;
-    reg             empty_flag;
+    reg [DATA_WIDTH-1:0] mem [FIFO_DEPTH-1:0];
+    reg [ADDR_WIDTH-1:0] push_pointer;
+    reg [ADDR_WIDTH-1:0] pop_pointer;
+    reg                  read_flag;
+    reg                  write_flag;
+    reg                  full_flag;
+    reg                  empty_flag;
+
+    assign o_overflow  = (full_flag && i_wr_en) ? 1'b1 : 1'b0;
+    assign o_underflow = (empty_flag && i_rd_en) ? 1'b1 : 1'b0;
 
     // WRITE DATA TO MEMORY
     always@(posedge i_clk) begin

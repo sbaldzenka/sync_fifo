@@ -24,8 +24,11 @@ module sync_fifo_testbench();
 
     wire        o_valid;
     wire  [7:0] o_data;
+
     wire        o_full;
     wire        o_empty;
+    wire        o_overflow;
+    wire        o_underflow;
 
     always #(sys_clk_period / 2) sys_clk = ~sys_clk;
 
@@ -135,20 +138,22 @@ module sync_fifo_testbench();
         i_rd_en_ff <= i_rd_en;
     end
 
-    defparam DUT_inst.DEPTH = 3;
-    defparam DUT_inst.WIDTH = 8;
+    defparam DUT_inst.FIFO_DEPTH = 16;
+    defparam DUT_inst.DATA_WIDTH = 8;
 
     sync_fifo DUT_inst
     (
-        .i_clk   ( sys_clk    ),
-        .i_reset ( reset      ),
-        .i_wr_en ( i_wr_en_ff ),
-        .i_data  ( i_data_ff  ),
-        .o_valid ( o_valid    ),
-        .o_data  ( o_data     ),
-        .i_rd_en ( i_rd_en_ff ),
-        .o_full  ( o_full     ),
-        .o_empty ( o_empty    )
+        .i_clk       ( sys_clk     ),
+        .i_reset     ( reset       ),
+        .i_wr_en     ( i_wr_en_ff  ),
+        .i_data      ( i_data_ff   ),
+        .o_valid     ( o_valid     ),
+        .o_data      ( o_data      ),
+        .i_rd_en     ( i_rd_en_ff  ),
+        .o_full      ( o_full      ),
+        .o_empty     ( o_empty     ),
+        .o_overflow  ( o_overflow  ),
+        .o_underflow ( o_underflow )
     );
 
 endmodule
