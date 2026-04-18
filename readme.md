@@ -8,7 +8,7 @@ Single clock synchronous FIFO with native interface. VHDL and Verilog versions.
   - **hdl** - verilog files;
   - **sim** - script files for modelsim/questasim;
   - **tb** - testbenches;
-- **sync_fifo_vhdl** - sync_fifo verilog version;
+- **sync_fifo_vhdl** - sync_fifo vhdl version;
   - **hdl** - vhdl files;
   - **sim** - script files for modelsim/questasim;
   - **tb** - testbenches.
