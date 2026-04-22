@@ -16,5 +16,8 @@ Single clock synchronous FIFO with native interface. VHDL and Verilog versions.
 :exclamation: To set the FIFO depth and width, you must specify **FIFO_DEPTH** and **DATA_WIDTH** parameters
 in the top project file (**sync_fifo.vhd** or **sync_fifo.v**).
 
+### Block Diagram:
+![Block Diagram](doc/sync_fifo_block_diagram.drawio.png)
+
 ### Write and Read operations:
 ![Write and Read operations](doc/sync_fifo_waves.png)
