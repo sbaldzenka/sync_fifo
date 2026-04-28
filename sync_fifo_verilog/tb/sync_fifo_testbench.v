@@ -6,11 +6,17 @@
 
 `timescale 1ns/100ps
 
-module sync_fifo_testbench();
+module sync_fifo_testbench
+#(
+    parameter CLK_PERIOD = 10.000,
+    parameter FIFO_DEPTH = 16,
+    parameter DATA_WIDTH = 8
+);
 
+    // variables
     integer     index;
-    real        sys_clk_period = 10.000;
 
+    // signals
     reg         sys_clk = 1'b0;
     reg         reset;
 
@@ -30,7 +36,7 @@ module sync_fifo_testbench();
     wire        o_overflow;
     wire        o_underflow;
 
-    always #(sys_clk_period / 2) sys_clk = ~sys_clk;
+    always #(CLK_PERIOD/2) sys_clk = ~sys_clk;
 
     task reset_generate;
         begin
@@ -138,8 +144,8 @@ module sync_fifo_testbench();
         i_rd_en_ff <= i_rd_en;
     end
 
-    defparam DUT_inst.FIFO_DEPTH = 16;
-    defparam DUT_inst.DATA_WIDTH = 8;
+    defparam DUT_inst.FIFO_DEPTH = FIFO_DEPTH;
+    defparam DUT_inst.DATA_WIDTH = DATA_WIDTH;
 
     sync_fifo DUT_inst
     (

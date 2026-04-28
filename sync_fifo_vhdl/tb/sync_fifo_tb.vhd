@@ -92,58 +92,53 @@ begin
         data_in <= (others => '0');
         wait for 1 us;
         wait until falling_edge(clk);
-        wr_en   <= '1';
-        data_in <= x"01";
-        wait for clk_period;
-        data_in <= x"02";
-        wait for clk_period;
-        data_in <= x"03";
-        wait for clk_period;
-        data_in <= x"04";
-        wait for clk_period;
-        wr_en   <= '0';
+
+        for index in 0 to 3 loop
+            wr_en   <= '1';
+            data_in <= data_in + '1';
+            wait for clk_period;
+        end loop;
+
+        wr_en <= '0';
         wait for 1 us;
-        rd_en   <= '1';
+
+        rd_en <= '1';
         wait for clk_period*4;
-        rd_en   <= '0';
+        rd_en <= '0';
+
         wait for 1 us;
         wait until falling_edge(clk);
-        rd_en   <= '1';
+        rd_en <= '1';
         wait for clk_period*4;
-        rd_en   <= '0';
+        rd_en <= '0';
+
         wait for 1 us;
         wait until falling_edge(clk);
-        wr_en   <= '1';
-        data_in <= x"01";
-        wait for clk_period;
-        data_in <= x"02";
-        wait for clk_period;
-        data_in <= x"03";
-        wait for clk_period;
-        data_in <= x"04";
-        wait for clk_period;
-        data_in <= x"05";
-        wait for clk_period;
-        wr_en   <= '0';
+
+        for index in 0 to 4 loop
+            wr_en   <= '1';
+            data_in <= data_in + '1';
+            wait for clk_period;
+        end loop;
+
+        wr_en <= '0';
+
         wait for 1 us;
         wait until falling_edge(clk);
-        wr_en   <= '1';
-        data_in <= x"06";
-        wait for clk_period;
-        data_in <= x"07";
-        wait for clk_period;
-        data_in <= x"08";
-        wait for clk_period;
-        data_in <= x"09";
-        wait for clk_period;
-        data_in <= x"0A";
-        wait for clk_period;
-        wr_en   <= '0';
+
+        for index in 0 to 4 loop
+            wr_en   <= '1';
+            data_in <= data_in + '1';
+            wait for clk_period;
+        end loop;
+
+        wr_en <= '0';
+
         wait for 1 us;
         wait until falling_edge(clk);
-        rd_en   <= '1';
+        rd_en <= '1';
         wait for clk_period*8;
-        rd_en   <= '0';
+        rd_en <= '0';
         wait for 1 us;
         wait;
     end process;
