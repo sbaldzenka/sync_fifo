@@ -1,4 +1,5 @@
 -- project     : sync_fifo
+-- version     : 1.1
 -- date        : 14.04.2026
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me

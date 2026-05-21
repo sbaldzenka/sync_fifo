@@ -1,8 +1,9 @@
 -- project     : sync_fifo
+-- version     : 1.1
 -- date        : 14.04.2026
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
--- description : https://github.com/sbaldzenka/sync_fifo
+-- description : https://github.com/sbaldzenka/sync_fifo/sync_fifo_vhdl
 
 vlib work
 vmap work work

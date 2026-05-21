@@ -1,4 +1,5 @@
 -- project     : sync_fifo
+-- version     : 1.1
 -- date        : 14.04.2026
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
@@ -29,20 +30,22 @@ architecture behavioral of sync_fifo_tb is
     port
     (
         -- global signals
-        i_clk       : in  std_logic;
-        i_reset     : in  std_logic;
+        i_clk          : in  std_logic;
+        i_reset        : in  std_logic;
         -- write data signals
-        i_wr_en     : in  std_logic;
-        i_data      : in  std_logic_vector(DATA_WIDTH-1 downto 0);
+        i_wr_en        : in  std_logic;
+        i_data         : in  std_logic_vector(DATA_WIDTH-1 downto 0);
         -- read data signals
-        i_rd_en     : in  std_logic;
-        o_valid     : out std_logic;
-        o_data      : out std_logic_vector(DATA_WIDTH-1 downto 0);
+        i_rd_en        : in  std_logic;
+        o_valid        : out std_logic;
+        o_data         : out std_logic_vector(DATA_WIDTH-1 downto 0);
         -- status signals
-        o_full      : out std_logic;
-        o_empty     : out std_logic;
-        o_overflow  : out std_logic;
-        o_underflow : out std_logic
+        o_full         : out std_logic;
+        o_empty        : out std_logic;
+        o_almost_full  : out std_logic;
+        o_almost_empty : out std_logic;
+        o_overflow     : out std_logic;
+        o_underflow    : out std_logic
     );
     end component;
 
@@ -50,20 +53,22 @@ architecture behavioral of sync_fifo_tb is
     constant clk_period : time := 20 ns; --50 MHz
 
     -- signals
-    signal clk        : std_logic;
-    signal reset      : std_logic;
-    signal wr_en      : std_logic;
-    signal data_in    : std_logic_vector(DATA_WIDTH-1 downto 0);
-    signal wr_en_ff   : std_logic;
-    signal data_in_ff : std_logic_vector(DATA_WIDTH-1 downto 0);
-    signal rd_en      : std_logic;
-    signal rd_en_ff   : std_logic;
-    signal valid      : std_logic;
-    signal data_out   : std_logic_vector(DATA_WIDTH-1 downto 0);
-    signal full       : std_logic;
-    signal empty      : std_logic;
-    signal overflow   : std_logic;
-    signal underflow  : std_logic;
+    signal clk          : std_logic;
+    signal reset        : std_logic;
+    signal wr_en        : std_logic;
+    signal data_in      : std_logic_vector(DATA_WIDTH-1 downto 0);
+    signal wr_en_ff     : std_logic;
+    signal data_in_ff   : std_logic_vector(DATA_WIDTH-1 downto 0);
+    signal rd_en        : std_logic;
+    signal rd_en_ff     : std_logic;
+    signal valid        : std_logic;
+    signal data_out     : std_logic_vector(DATA_WIDTH-1 downto 0);
+    signal full         : std_logic;
+    signal empty        : std_logic;
+    signal almost_full  : std_logic;
+    signal almost_empty : std_logic;
+    signal overflow     : std_logic;
+    signal underflow    : std_logic;
 
 begin
 
@@ -160,17 +165,19 @@ begin
     )
     port map
     (
-        i_clk       => clk,
-        i_reset     => reset,
-        i_wr_en     => wr_en_ff,
-        i_data      => data_in_ff,
-        i_rd_en     => rd_en_ff,
-        o_valid     => valid,
-        o_data      => data_out,
-        o_full      => full,
-        o_empty     => empty,
-        o_overflow  => overflow,
-        o_underflow => underflow
+        i_clk          => clk,
+        i_reset        => reset,
+        i_wr_en        => wr_en_ff,
+        i_data         => data_in_ff,
+        i_rd_en        => rd_en_ff,
+        o_valid        => valid,
+        o_data         => data_out,
+        o_full         => full,
+        o_empty        => empty,
+        o_almost_full  => almost_full,
+        o_almost_empty => almost_empty,
+        o_overflow     => overflow,
+        o_underflow    => underflow
     );
 
 end behavioral;
