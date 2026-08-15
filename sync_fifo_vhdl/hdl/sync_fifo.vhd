@@ -1,9 +1,9 @@
--- project     : sync_fifo
+-- project     : sync_fifo_vhdl
 -- version     : 1.1
 -- date        : 14.04.2026
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
--- description : https://github.com/sbaldzenka/sync_fifo/sync_fifo_vhdl
+-- description : https://github.com/sbaldzenka/sync_fifo
 
 library ieee;
 use ieee.std_logic_1164.all;
@@ -55,8 +55,6 @@ begin
 
     full_flag      <= '1' when (write_flag = '1' and push_pointer = pop_pointer) else '0';
     empty_flag     <= '1' when (read_flag = '1' and pop_pointer = push_pointer) else '0';
-    o_overflow     <= '1' when (i_wr_en = '1' and full_flag = '1') else '0';
-    o_underflow    <= '1' when (i_rd_en = '1' and empty_flag = '1') else '0';
     o_full         <= full_flag;
     o_empty        <= empty_flag;
 
@@ -185,6 +183,28 @@ begin
                 o_valid <= '1';
             else
                 o_valid <= '0';
+            end if;
+        end if;
+    end process;
+
+    OVERFLOW_GEN: process(i_clk)
+    begin
+        if rising_edge(i_clk) then
+            if (i_wr_en = '1' and full_flag = '1') then
+                o_overflow <= '1';
+            else
+                o_overflow <= '0';
+            end if;
+        end if;
+    end process;
+
+    UNDERFLOW_GEN: process(i_clk)
+    begin
+        if rising_edge(i_clk) then
+            if (i_rd_en = '1' and empty_flag = '1') then
+                o_underflow <= '1';
+            else
+                o_underflow <= '0';
             end if;
         end if;
     end process;

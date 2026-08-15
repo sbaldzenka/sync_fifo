@@ -1,8 +1,8 @@
--- project     : sync_fifo
+-- project     : sync_fifo_verilog
 -- date        : 27.07.2023
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
--- description : https://github.com/sbaldzenka/sync_fifo/sync_fifo_verilog
+-- description : https://github.com/sbaldzenka/sync_fifo
 
 vlib work
 vmap work work

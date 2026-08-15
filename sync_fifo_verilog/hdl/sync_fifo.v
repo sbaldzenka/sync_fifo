@@ -1,8 +1,8 @@
-// project     : sync_fifo
+// project     : sync_fifo_verilog
 // date        : 27.07.2023
 // author      : siarhei baldzenka
 // e-mail      : sbaldzenka@proton.me
-// description : https://github.com/sbaldzenka/sync_fifo/sync_fifo_verilog
+// description : https://github.com/sbaldzenka/sync_fifo
 
 `timescale 1ns/100ps
 
@@ -25,8 +25,10 @@ module sync_fifo
     // status signals
     output wire                  o_full,
     output wire                  o_empty,
-    output wire                  o_underflow,
-    output wire                  o_overflow
+    output wire                  o_almost_full,
+    output wire                  o_almost_empty,
+    output reg                   o_underflow,
+    output reg                   o_overflow
 );
 
     // parameters
@@ -39,10 +41,9 @@ module sync_fifo
     reg                  read_flag;
     reg                  write_flag;
     reg                  full_flag;
+    reg                  almost_full_flag;
     reg                  empty_flag;
-
-    assign o_overflow  = (full_flag && i_wr_en) ? 1'b1 : 1'b0;
-    assign o_underflow = (empty_flag && i_rd_en) ? 1'b1 : 1'b0;
+    reg                  almost_empty_flag;
 
     // WRITE DATA TO MEMORY
     always@(posedge i_clk) begin
@@ -112,6 +113,21 @@ module sync_fifo
 
     assign o_full = full_flag;
 
+    // ALMOST FULL FLAG
+    always@(*) begin
+        if (i_reset) begin
+            almost_full_flag = 1'b0;
+        end else begin
+            if (push_pointer == pop_pointer - 1'b1) begin
+                almost_full_flag = 1'b1;
+            end else begin
+                almost_full_flag = 1'b0;
+            end
+        end
+    end
+
+    assign o_almost_full = almost_full_flag | full_flag;
+
     // READ FLAG
     always@(posedge i_clk) begin
         if (i_reset) begin
@@ -132,7 +148,7 @@ module sync_fifo
         if (i_reset) begin
             empty_flag = 1'b1;
         end else begin
-            if (read_flag && push_pointer == pop_pointer) begin
+            if (read_flag && pop_pointer == push_pointer) begin
                 empty_flag = 1'b1;
             end else begin
                 empty_flag = 1'b0;
@@ -142,12 +158,45 @@ module sync_fifo
 
     assign o_empty = empty_flag;
 
+    // ALMOST EMPTY FLAG
+    always@(*) begin
+        if (i_reset) begin
+            almost_empty_flag = 1'b0;
+        end else begin
+            if (pop_pointer == push_pointer - 1'b1) begin
+                almost_empty_flag = 1'b1;
+            end else begin
+                almost_empty_flag = 1'b0;
+            end
+        end
+    end
+
+    assign o_almost_empty = almost_empty_flag | empty_flag;
+
     // VALID SIGNAL
     always@(posedge i_clk) begin
         if (i_rd_en && !empty_flag) begin
             o_valid <= 1'b1;
         end else begin
             o_valid <= 1'b0;
+        end
+    end
+
+    // UNDERFLOW
+    always@(posedge i_clk) begin
+        if (empty_flag && i_rd_en) begin
+            o_underflow <= 1'b1;
+        end else begin
+            o_underflow <= 1'b0;
+        end
+    end
+
+    // OVERFLOW
+    always@(posedge i_clk) begin
+        if (full_flag && i_wr_en) begin
+            o_overflow <= 1'b1;
+        end else begin
+            o_overflow <= 1'b0;
         end
     end
 
