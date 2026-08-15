@@ -1,4 +1,5 @@
 -- project     : sync_fifo_verilog
+-- version     : 1.0
 -- date        : 27.07.2023
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
