@@ -1,5 +1,7 @@
 # sync_fifo
 
+> **version: 1.0**
+ 
 Single clock synchronous FIFO with native interface. VHDL and Verilog versions.
 
 ### Catalogs structure:
