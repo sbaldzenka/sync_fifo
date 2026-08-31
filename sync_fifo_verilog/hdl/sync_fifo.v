@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 ---------------------------------------------------------------------------------------
 
 project     : sync_fifo_verilog
-version     : 1.0
+version     : 1.1
 date        : 27.07.2023
 author      : siarhei baldzenka
 e-mail      : sbaldzenka@proton.me
@@ -66,33 +66,31 @@ module sync_fifo
 
     // signals
     reg [DATA_WIDTH-1:0] mem [FIFO_DEPTH-1:0];
-    reg [ADDR_WIDTH-1:0] push_pointer;
-    reg [ADDR_WIDTH-1:0] pop_pointer;
-    reg                  read_flag;
-    reg                  write_flag;
+    reg [  ADDR_WIDTH:0] push_pointer;
+    reg [  ADDR_WIDTH:0] pop_pointer;
     reg                  full_flag;
     reg                  almost_full_flag;
     reg                  empty_flag;
     reg                  almost_empty_flag;
 
     // WRITE DATA TO MEMORY
-    always@(posedge i_clk) begin
+    always @(posedge i_clk) begin
         if (i_wr_en && !full_flag) begin
-            mem[push_pointer] <= i_data;
+            mem[push_pointer[ADDR_WIDTH-1:0]] <= i_data;
         end
     end
 
     // READ DATA FROM MEMORY
-    always@(posedge i_clk) begin
+    always @(posedge i_clk) begin
         if (i_rd_en && !empty_flag) begin
-            o_data <= mem[pop_pointer];
+            o_data <= mem[pop_pointer[ADDR_WIDTH-1:0]];
         end else begin
             o_data <= 'b0;
         end
     end
 
     // PUSH POINTER
-    always@(posedge i_clk) begin
+    always @(posedge i_clk) begin
         if (i_reset) begin
             push_pointer <= 'b0;
         end else begin
@@ -103,7 +101,7 @@ module sync_fifo
     end
 
     // POP POINTER
-    always@(posedge i_clk) begin
+    always @(posedge i_clk) begin
         if (i_reset) begin
             pop_pointer <= 'b0;
         end else begin
@@ -113,27 +111,13 @@ module sync_fifo
         end
     end
 
-    // WRITE FLAG
-    always@(posedge i_clk) begin
-        if (i_reset) begin
-            write_flag <= 1'b0;
-        end else begin
-            if (i_wr_en) begin
-                write_flag <= 1'b1;
-            end
-
-            if (i_rd_en) begin
-                write_flag <= 1'b0;
-            end
-        end
-    end
-
     // FULL FLAG
-    always@(*) begin
+    always @(*) begin
         if (i_reset) begin
             full_flag = 1'b0;
         end else begin
-            if (write_flag && push_pointer == pop_pointer) begin
+            if (push_pointer[ADDR_WIDTH] == ~pop_pointer[ADDR_WIDTH] &&
+                push_pointer[ADDR_WIDTH-1:0] == pop_pointer[ADDR_WIDTH-1:0]) begin
                 full_flag = 1'b1;
             end else begin
                 full_flag = 1'b0;
@@ -144,7 +128,7 @@ module sync_fifo
     assign o_full = full_flag;
 
     // ALMOST FULL FLAG
-    always@(*) begin
+    always @(*) begin
         if (i_reset) begin
             almost_full_flag = 1'b0;
         end else begin
@@ -158,27 +142,12 @@ module sync_fifo
 
     assign o_almost_full = almost_full_flag | full_flag;
 
-    // READ FLAG
-    always@(posedge i_clk) begin
-        if (i_reset) begin
-            read_flag <= 1'b1;
-        end else begin
-            if (i_rd_en) begin
-                read_flag <= 1'b1;
-            end
-
-            if (i_wr_en) begin
-                read_flag <= 1'b0;
-            end
-        end
-    end
-
     // EMPTY FLAG
-    always@(*) begin
+    always @(*) begin
         if (i_reset) begin
             empty_flag = 1'b1;
         end else begin
-            if (read_flag && pop_pointer == push_pointer) begin
+            if (pop_pointer == push_pointer) begin
                 empty_flag = 1'b1;
             end else begin
                 empty_flag = 1'b0;
@@ -189,7 +158,7 @@ module sync_fifo
     assign o_empty = empty_flag;
 
     // ALMOST EMPTY FLAG
-    always@(*) begin
+    always @(*) begin
         if (i_reset) begin
             almost_empty_flag = 1'b0;
         end else begin
@@ -204,7 +173,7 @@ module sync_fifo
     assign o_almost_empty = almost_empty_flag | empty_flag;
 
     // VALID SIGNAL
-    always@(posedge i_clk) begin
+    always @(posedge i_clk) begin
         if (i_rd_en && !empty_flag) begin
             o_valid <= 1'b1;
         end else begin
@@ -213,7 +182,7 @@ module sync_fifo
     end
 
     // UNDERFLOW
-    always@(posedge i_clk) begin
+    always @(posedge i_clk) begin
         if (empty_flag && i_rd_en) begin
             o_underflow <= 1'b1;
         end else begin
@@ -222,7 +191,7 @@ module sync_fifo
     end
 
     // OVERFLOW
-    always@(posedge i_clk) begin
+    always @(posedge i_clk) begin
         if (full_flag && i_wr_en) begin
             o_overflow <= 1'b1;
         end else begin

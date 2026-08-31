@@ -1,5 +1,5 @@
 -- project     : sync_fifo_verilog
--- version     : 1.0
+-- version     : 1.1
 -- date        : 27.07.2023
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
@@ -15,4 +15,4 @@ vsim -t 1ps -voptargs=+acc=lprn -lib work sync_fifo_testbench
 
 do wave_test.do
 view wave
-run 12 us
+run 10 us

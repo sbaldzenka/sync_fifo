@@ -25,7 +25,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SO
 ---------------------------------------------------------------------------------------
 
 project     : sync_fifo_verilog
-version     : 1.0
+version     : 1.1
 date        : 27.07.2023
 author      : siarhei baldzenka
 e-mail      : sbaldzenka@proton.me
@@ -44,29 +44,29 @@ module sync_fifo_testbench
 );
 
     // variables
-    integer     index;
+    integer               index;
 
     // signals
-    reg         sys_clk;
-    reg         reset;
+    reg                   sys_clk;
+    reg                   reset;
 
-    reg         i_wr_en;
-    reg   [7:0] i_data;
-    reg         i_rd_en;
+    reg                   i_wr_en;
+    reg  [DATA_WIDTH-1:0] i_data;
+    reg                   i_rd_en;
 
-    reg         i_wr_en_ff;
-    reg   [7:0] i_data_ff;
-    reg         i_rd_en_ff;
+    reg                   i_wr_en_ff;
+    reg  [DATA_WIDTH-1:0] i_data_ff;
+    reg                   i_rd_en_ff;
 
-    wire        o_valid;
-    wire  [7:0] o_data;
+    wire                  o_valid;
+    wire [DATA_WIDTH-1:0] o_data;
 
-    wire        o_full;
-    wire        o_empty;
-    wire        o_almost_full;
-    wire        o_almost_empty;
-    wire        o_overflow;
-    wire        o_underflow;
+    wire                  o_full;
+    wire                  o_empty;
+    wire                  o_almost_full;
+    wire                  o_almost_empty;
+    wire                  o_overflow;
+    wire                  o_underflow;
 
     always #(CLK_PERIOD/2) sys_clk = ~sys_clk;
 
@@ -82,7 +82,6 @@ module sync_fifo_testbench
         input integer number_of_words;
 
         begin
-            #1000;
             @(negedge sys_clk);
             for (index = 0; index < number_of_words; index = index + 1) begin
                 i_wr_en = 1'b1;
@@ -99,7 +98,7 @@ module sync_fifo_testbench
         input integer number_of_words;
 
         begin
-            #1000;
+            @(negedge sys_clk);
             i_rd_en = 1'b1;
             #(CLK_PERIOD*number_of_words);
             i_rd_en = 1'b0;
@@ -109,21 +108,32 @@ module sync_fifo_testbench
     initial begin
         sys_clk = 1'b0;
         i_wr_en = 1'b0;
-        i_data  = 8'h00;
+        i_data  = 'b0;
         i_rd_en = 1'b0;
     end
 
     initial begin
         reset_generate();
+        #100;
         write_data(8);
+        #100;
         read_data(4);
+        #100;
         read_data(5);
+        #100;
         read_data(4);
+        #100;
         write_data(19);
+        #100;
         read_data(16);
+        #1000;
+        fork
+            write_data(16);
+            read_data(18);
+        join
     end
 
-    always@(posedge sys_clk) begin
+    always @(posedge sys_clk) begin
         i_wr_en_ff <= i_wr_en;
         i_data_ff  <= i_data;
         i_rd_en_ff <= i_rd_en;
