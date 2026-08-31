@@ -1,6 +1,6 @@
 # sync_fifo
 
-> **version: 1.0**
+> **version: 1.1**
  
 Single clock synchronous FIFO with native interface. VHDL and Verilog versions.
 

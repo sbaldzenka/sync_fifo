@@ -24,7 +24,7 @@
 -- ---------------------------------------------------------------------------------------
 --
 -- project     : sync_fifo_vhdl
--- version     : 1.0
+-- version     : 1.1
 -- date        : 14.04.2026
 -- author      : siarhei baldzenka
 -- e-mail      : sbaldzenka@proton.me
