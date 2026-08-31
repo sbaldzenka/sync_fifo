@@ -132,7 +132,8 @@ module sync_fifo
         if (i_reset) begin
             almost_full_flag = 1'b0;
         end else begin
-            if (push_pointer == pop_pointer - 1'b1) begin
+            if (push_pointer[ADDR_WIDTH] == ~pop_pointer[ADDR_WIDTH] &&
+                push_pointer[ADDR_WIDTH-1:0] == pop_pointer[ADDR_WIDTH-1:0] - 1'b1) begin
                 almost_full_flag = 1'b1;
             end else begin
                 almost_full_flag = 1'b0;
